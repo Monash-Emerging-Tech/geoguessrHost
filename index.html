@@ -1,69 +1,53 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>MNET Monash Geoguessr</title>
 
-    <!-- MazeMaps CSS -->
-    <link
-      rel="stylesheet"
-      href="https://api.mazemap.com/js/v2.2.1/mazemap.min.css"
-    />
-
-    <!-- App CSS -->
-    <link rel="stylesheet" href="/assets/css/app.css" />
-
-    <!-- MazeMaps JS -->
-    <script
-      src="https://api.mazemap.com/js/v2.2.1/mazemap.min.js"
-      onerror="console.error('Failed to load Maze Maps JavaScript library')"
-      onload="console.log('Maze Maps JavaScript library loaded')"
-    ></script>
+     <!-- MazeMaps CSS -->
+     <link rel="stylesheet" href="https://api.mazemap.com/js/v2.2.1/mazemap.min.css">
+     <!-- App CSS -->
+     <link rel="stylesheet" href="assets/css/app.css">
+      <script type='text/javascript' src="https://api.mazemap.com/js/v2.2.1/mazemap.min.js" 
+              onerror="console.error('Failed to load Maze Maps JavaScript library')"
+              onload="console.log('Maze Maps JavaScript library loaded successfully', typeof mazemap, typeof window.mazemap)"></script>
   </head>
 
-  <body style="padding:0; margin:0; overflow:hidden;">
-    <div
-      id="game-container"
-      style="position: relative; width: 100vw; height: 100vh;"
-    >
-      <!-- Unity canvas -->
-      <canvas
-        id="unity-canvas"
-        tabindex="-1"
-        style="width:100%; height:100%; background:#231F20; display:block;"
-      ></canvas>
+  <body style="text-align: center; padding: 0; border: 0; margin: 0; overflow: hidden;">
+    <!-- wrapper container for positioning -->
+    <div id="game-container" style="position: relative; display: inline-block; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh;">
+      <!-- unity canvas -->
+      <canvas id="unity-canvas" width="960" height="600" tabindex="-1" style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; background: #231F20; display: block;"></canvas>
 
-      <!-- Maze Map UI -->
-      <div id="maze-map-ui" style="position:absolute; bottom:20px; right:20px; display:none;">
+      <!-- Maze Map widget controls -->
+      <div id="maze-map-ui" style="position: absolute; bottom: 20px; right: 20px; display: none;">
         <div class="mm-controls">
-          <button class="mm-btn mm-expand"></button>
-          <button class="mm-btn mm-minimise"></button>
-          <button class="mm-btn mm-pin"></button>
+          <button class="mm-btn mm-expand" aria-label="Expand"></button>
+          <button class="mm-btn mm-minimise" aria-label="Minimise"></button>
+          <button class="mm-btn mm-pin" aria-label="Pin"></button>
         </div>
 
+        <!-- Maze Map widget -->
         <div id="maze-map-widget" class="maze-map-widget mm-size-s">
           <div id="maze-maps-container" class="mazemap-container">
-            <div id="map"></div>
+          <div id="map"></div>
           </div>
         </div>
-
+        
+        <!-- Guess Button -->
         <button id="guess-button" class="mm-guess-btn" disabled>
           PLACE YOUR PIN ON THE MAP
         </button>
-      </div>
+	    </div>
     </div>
-
-    <!-- Unity loader (from WebGL build output) -->
-    <script src="/unity/Build/unity.loader.js"></script>
-
+    <script src="Build/geoguessr_build.loader.js"></script>
     <script>
-      // Mobile handling (unchanged logic)
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        const meta = document.createElement('meta');
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
         meta.name = 'viewport';
-        meta.content =
-          'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
 
         var gameContainer = document.querySelector("#game-container");
@@ -85,25 +69,27 @@
         document.body.style.textAlign = "left";
       }
 
-      // Create Unity instance (placeholders replaced with real paths)
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "/unity/Build/unity.data",
-        frameworkUrl: "/unity/Build/unity.framework.js",
-        codeUrl: "/unity/Build/unity.wasm",
+        arguments: [],
+        dataUrl: "Build/geoguessr_build.data",
+        frameworkUrl: "Build/geoguessr_build.framework.js",
+        codeUrl: "Build/geoguessr_build.wasm",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "MNET",
-        productName: "Geoguessr",
-        productVersion: "0.1"
-      }).then((unityInstance) => {
+        companyName: "Monash University",
+        productName: "MNET Monash Geoguessr",
+        productVersion: "1.0.0",
+        // matchWebGLToCanvasSize: false,
+        // devicePixelRatio: 1,
+      }).then(function(unityInstance) {
+        // Store Unity instance globally for access from other scripts
         window.unityInstance = unityInstance;
-        window.gameInstance = unityInstance;
-        console.log("Unity instance created");
-      }).catch((message) => {
+        window.gameInstance = unityInstance; // Also store as gameInstance for compatibility
+        console.log("Unity instance created and stored globally");
+      }).catch(function(message) {
         console.error("Unity instance creation failed:", message);
       });
     </script>
-
-    <!-- Your app logic (Vite-managed) -->
-    <script type="module" src="/src/app.js"></script>
+    <!-- App JS -->
+    <script src="assets/js/app.js" defer></script>
   </body>
 </html>
