@@ -55,8 +55,8 @@
       </div>
     </div>
 
-    <!-- Unity loader (from WebGL  output) -->
-    <script src="/unity/Build/unity.loader.js"></script>
+    <!-- Unity loader (from WebGL output) -->
+    <script src="Build/unity.loader.js"></script>
 
     <script>
       // Mobile handling (unchanged logic)
@@ -88,9 +88,9 @@
 
       // Create Unity instance (placeholders replaced with real paths)
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "/unity/Build/unity.data",
-        frameworkUrl: "/unity/Build/unity.framework.js",
-        codeUrl: "/unity/Build/unity.wasm",
+        dataUrl: "Build/unity.data",
+        frameworkUrl: "Build/unity.framework.js",
+        codeUrl: "Build/unity.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "MNET",
         productName: "Geoguessr",
@@ -104,7 +104,8 @@
       });
     </script>
 
-    <!-- Your app logic (Vite-managed) -->
-    <script type="module" src="/assets/js/app.js"></script>
+    <!-- Your app logic (hosted) -->
+    <script src="assets/js/unityBridge.js"></script>
+    <script src="assets/js/app.js"></script>
   </body>
 </html>
